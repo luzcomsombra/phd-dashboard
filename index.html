@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PhD Dashboard</title>
+  <!-- Chart.js for ECTS Visualization -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- PapaParse to parse local CSV files -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+  
+  <style>
+    :root {
+      --bg-color: #f7f6f3;
+      --card-bg: #ffffff;
+      --text-color: #37352f;
+      --border-color: rgba(55, 53, 47, 0.12);
+      --accent-blue: #e5f2fc;
+      --accent-teal: #e8f1ec;
+      --accent-gray: #f0efed;
+    }
+
+    body {
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 1rem;
+    }
+
+    h1 { font-size: 2.2rem; margin: 0 0 0.5rem 0; }
+    h2 { font-size: 1.3rem; margin-top: 0; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    /* ECTS Table & Chart styling */
+    .chart-container {
+      position: relative;
+      height: 220px;
+      margin-bottom: 1.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      border: 1px solid var(--border-color);
+      padding: 8px 12px;
+      text-align: left;
+    }
+
+    th { background: #fafafa; }
+
+    /* Project Workspaces */
+    details {
+      background: #fafafa;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      margin-bottom: 0.75rem;
+      padding: 0.75rem 1rem;
+    }
+
+    summary {
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .project-content {
+      margin-top: 1rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .todo-list { list-style: none; padding-left: 0; }
+    .todo-list li { margin-bottom: 0.4rem; }
+
+    /* Callout Boxes */
+    .callout {
+      border-radius: 6px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .callout-blue { background: var(--accent-blue); }
+    .callout-teal { background: var(--accent-teal); }
+    .callout-gray { background: var(--accent-gray); }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 6px;
+      margin-top: 5px;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>🎓 PhD Dashboard</h1>
+    <p>Track requirements, manage ongoing projects, and store essential links.</p>
+  </header>
+
+  <div class="grid">
+    <!-- LEFT COLUMN: Progress & Requirements -->
+    <div>
+      <div class="card">
+        <h2>🎓 PhD Progress Tracker</h2>
+        <div class="chart-container">
+          <canvas id="ectsChart"></canvas>
+        </div>
+        <div id="table-container">
+          <p>Loading ECTS data from <code>requirements.csv</code>...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: Projects, Resources, & Integrations -->
+    <div>
+      <!-- Ongoing Projects Subsection -->
+      <div class="card">
+        <h2>📁 Ongoing Projects</h2>
+
+        <details>
+          <summary>🔬 EMA 1</summary>
+          <div class="project-content">
+            <h4>To-Do List</h4>
+            <ul class="todo-list">
+              <li><input type="checkbox"> Complete data cleaning</li>
+              <li><input type="checkbox"> Run pilot analysis</li>
+            </ul>
+            <h4>Notes & Files</h4>
+            <p>📁 Link to data: <code>/data/ema1_raw.csv</code></p>
+          </div>
+        </details>
+
+        <details>
+          <summary>📝 Meta Analysis</summary>
+          <div class="project-content">
+            <h4>To-Do List</h4>
+            <ul class="todo-list">
+              <li><input type="checkbox"> Systematic screening of papers</li>
+              <li><input type="checkbox"> Extract effect sizes</li>
+            </ul>
+            <h4>Notes & Files</h4>
+            <p>📝 Pre-registration draft saved in Drive.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>💡 Essays</summary>
+          <div class="project-content">
+            <h4>To-Do List</h4>
+            <ul class="todo-list">
+              <li><input type="checkbox"> Draft Chapter 1 outline</li>
+            </ul>
+            <h4>Notes & Files</h4>
+            <p>💡 Research idea notes updated weekly.</p>
+          </div>
+        </details>
+      </div>
+
+      <!-- Useful Links Section -->
+      <div class="card">
+        <h2>📚 Useful Links & Resources</h2>
+        <ul>
+          <li><a href="https://scholar.google.com" target="_blank">Google Scholar</a></li>
+          <li><a href="https://www.zotero.org" target="_blank">Zotero Library</a></li>
+          <li><a href="https://osf.io" target="_blank">OSF Repository</a></li>
+        </ul>
+      </div>
+
+      <!-- Integrations / Calendar Section -->
+      <div class="card">
+        <h2>🔗 Integrations & Calendar</h2>
+        
+        <div class="callout callout-blue">
+          <div>📅</div>
+          <div>
+            <strong>Google Calendar Embed</strong><br>
+            <!-- Replace the src below with your Google Calendar embed code URL -->
+            <iframe src="https://calendar.google.com/calendar/embed?src=en.official%23holiday%40group.v.calendar.google.com&ctz=UTC" 
+                    style="border: 0; width: 100%; height: 250px; margin-top: 10px;" 
+                    frameborder="0" 
+                    scrolling="no"></iframe>
+          </div>
+        </div>
+
+        <div class="callout callout-teal">
+          <div>📂</div>
+          <div><strong>Google Drive:</strong> <a href="#" target="_blank">Open Shared PhD Folder</a></div>
+        </div>
+
+        <div class="callout callout-gray">
+          <div>🐱</div>
+          <div><strong>GitHub Repository:</strong> <a href="#" target="_blank">View Code & Scripts</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Load and Parse CSV Data on page load
+  window.addEventListener('DOMContentLoaded', () => {
+    Papa.parse('requirements.csv', {
+      download: true,
+      header: true,
+      skipEmptyLines: true,
+      complete: function(results) {
+        renderDashboard(results.data);
+      },
+      error: function() {
+        document.getElementById('table-container').innerHTML = 
+          '<p style="color:red;">Error loading <code>requirements.csv</code>. Please make sure the CSV file exists in the repository root.</p>';
+      }
+    });
+  });
+
+  function renderDashboard(data) {
+    let completedECTS = 0;
+    let totalRequiredECTS = 0;
+
+    let tableHTML = '<table><thead><tr><th>Requirement</th><th>Completed</th><th>Required</th></tr></thead><tbody>';
+
+    data.forEach(row => {
+      const completed = parseFloat(row.ECTS_Completed) || 0;
+      const required = parseFloat(row.ECTS_Required) || 0;
+      
+      completedECTS += completed;
+      totalRequiredECTS += required;
+
+      tableHTML += `<tr>
+        <td>${row.Requirement}</td>
+        <td>${completed} ECTS</td>
+        <td>${required} ECTS</td>
+      </tr>`;
+    });
+
+    tableHTML += '</tbody></table>';
+    document.getElementById('table-container').innerHTML = tableHTML;
+
+    const missingECTS = Math.max(0, totalRequiredECTS - completedECTS);
+
+    // Render Doughnut Chart
+    const ctx = document.getElementById('ectsChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['ECTS Completed', 'ECTS Remaining'],
+        datasets: [{
+          data: [completedECTS, missingECTS],
+          backgroundColor: ['#50946E', '#CF5148'],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom' },
+          title: {
+            display: true,
+            text: `Total Progress: ${completedECTS} / ${totalRequiredECTS} ECTS`
+          }
+        }
+      }
+    });
+  }
+</script>
+</body>
+</html>
