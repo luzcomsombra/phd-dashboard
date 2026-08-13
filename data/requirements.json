@@ -1,0 +1,96 @@
+{
+  "programName": "PhD Program",
+  "totalECTS": 180,
+  "requirements": [
+    {
+      "id": "conf-presentation",
+      "name": "Presentation in Conference",
+      "category": "Research",
+      "completed": true,
+      "deadline": "2028-02-01",
+      "ects": 12.5,
+      "notes": "Presentation in international conference"
+    },
+    {
+      "id": "generic-skills",
+      "name": "Generic Skills",
+      "category": "Coursework",
+      "completed": false,
+      "deadline": "2028-02-01",
+      "ects": 2.5,
+      "notes": "Good scientific practice"
+    },
+    {
+      "id": "research-ws1",
+      "name": "Research Workshop 1",
+      "category": "Coursework",
+      "completed": false,
+      "deadline": "2028-02-01",
+      "ects": 5,
+      "notes": "Introduction of dissertation project"
+    },
+    {
+      "id": "research-ws2",
+      "name": "Research Workshop 2",
+      "category": "Coursework",
+      "completed": false,
+      "deadline": "2028-02-01",
+      "ects": 2.5,
+      "notes": "Presentation and discussion of research results"
+    },
+    {
+      "id": "paper-1",
+      "name": "Paper 1",
+      "category": "Publications",
+      "completed": false,
+      "deadline": "2028-02-01",
+      "ects": 50,
+      "notes": ""
+    },
+    {
+      "id": "paper-2",
+      "name": "Paper 2",
+      "category": "Publications",
+      "completed": false,
+      "deadline": "2028-02-01",
+      "ects": 50,
+      "notes": ""
+    },
+    {
+      "id": "paper-3",
+      "name": "Paper 3",
+      "category": "Publications",
+      "completed": false,
+      "deadline": "2028-02-01",
+      "ects": 50,
+      "notes": ""
+    },
+    {
+      "id": "dissertation-submission",
+      "name": "Dissertation submission",
+      "category": "Thesis",
+      "completed": false,
+      "deadline": "2028-02-01",
+      "ects": 0,
+      "notes": ""
+    },
+    {
+      "id": "dissertation-presentation",
+      "name": "Dissertation presentation",
+      "category": "Thesis",
+      "completed": false,
+      "deadline": "",
+      "ects": 7.5,
+      "notes": "Final oral defence"
+    },
+    {
+      "id": "paper-4",
+      "name": "4th paper?",
+      "category": "Publications",
+      "completed": false,
+      "deadline": "",
+      "ects": 0,
+      "notes": ""
+    }
+  ]
+}
