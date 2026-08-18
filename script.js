@@ -179,3 +179,76 @@ function formatDate(dateStr) {
 }
 
 init();
+// Toggle completed state
+document.getElementById('taskList').addEventListener('change', function(e) {
+  if (e.target.classList.contains('task-check')) {
+    e.target.closest('.task-item').classList.toggle('completed');
+    saveTasks();
+  }
+});
+
+// Auto-save on text edit
+document.getElementById('taskList').addEventListener('blur', function(e) {
+  if (e.target.classList.contains('task-text')) {
+    saveTasks();
+  }
+}, true);
+
+// Add new task
+function addNewTask() {
+  const taskList = document.getElementById('taskList');
+  const newItem = document.createElement('li');
+  newItem.className = 'task-item';
+  newItem.innerHTML = `
+    <input type="checkbox" class="task-check">
+    <span class="task-text" contenteditable="true">New task</span>
+    <button class="btn-delete" onclick="deleteTask(this)" title="Delete">×</button>
+  `;
+  taskList.appendChild(newItem);
+  
+  // Focus the new task text for immediate editing
+  newItem.querySelector('.task-text').focus();
+  saveTasks();
+}
+
+// Delete task
+function deleteTask(btn) {
+  btn.closest('.task-item').remove();
+  saveTasks();
+}
+
+// Save to localStorage (persists across page reloads)
+function saveTasks() {
+  const tasks = [];
+  document.querySelectorAll('.task-item').forEach(item => {
+    tasks.push({
+      text: item.querySelector('.task-text').textContent,
+      completed: item.querySelector('.task-check').checked
+    });
+  });
+  localStorage.setItem('myTaskList', JSON.stringify(tasks));
+}
+
+// Load from localStorage on page load
+function loadTasks() {
+  const saved = localStorage.getItem('myTaskList');
+  if (saved) {
+    const tasks = JSON.parse(saved);
+    const taskList = document.getElementById('taskList');
+    taskList.innerHTML = '';
+    tasks.forEach(task => {
+      const item = document.createElement('li');
+      item.className = 'task-item' + (task.completed ? ' completed' : '');
+      item.innerHTML = `
+        <input type="checkbox" class="task-check" ${task.completed ? 'checked' : ''}>
+        <span class="task-text" contenteditable="true">${task.text}</span>
+        <button class="btn-delete" onclick="deleteTask(this)" title="Delete">×</button>
+      `;
+      taskList.appendChild(item);
+    });
+  }
+}
+
+// Initialize on load
+document.addEventListener('DOMContentLoaded', loadTasks);
+
