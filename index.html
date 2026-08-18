@@ -48,15 +48,41 @@
                 </section>
             </div>
 
-            <div class="right-column">
-                <section class="card">
-                    <h2>Ongoing Projects</h2>
-                    <ul class="project-list">
-                        <li class="project-item"><span class="project-icon">🔬</span><span>EMA 1</span></li>
-                        <li class="project-item"><span class="project-icon">📊</span><span>Meta Analysis</span></li>
-                        <li class="project-item"><span class="project-icon">💡</span><span>Essays</span></li>
-                    </ul>
-                </section>
+           <div class="right-column">
+  <section class="card">
+    <h2>Ongoing Projects</h2>
+    <ul class="project-list">
+      <li class="project-item"><span class="project-icon">🔬</span><span>EMA 1</span></li>
+      <li class="project-item"><span class="project-icon">📊</span><span>Meta Analysis</span></li>
+      <li class="project-item"><span class="project-icon">💡</span><span>Essays</span></li>
+    </ul>
+  </section>
+
+  <!-- NEW: Editable Task List -->
+  <section class="card task-card">
+    <div class="task-header">
+      <h2>Task List</h2>
+      <button class="btn-add" onclick="addNewTask()" title="Add new task">+</button>
+    </div>
+    <ul class="task-list" id="taskList">
+      <li class="task-item">
+        <input type="checkbox" class="task-check">
+        <span class="task-text" contenteditable="true">Review literature</span>
+        <button class="btn-delete" onclick="deleteTask(this)" title="Delete">×</button>
+      </li>
+      <li class="task-item">
+        <input type="checkbox" class="task-check">
+        <span class="task-text" contenteditable="true">Draft methodology</span>
+        <button class="btn-delete" onclick="deleteTask(this)" title="Delete">×</button>
+      </li>
+      <li class="task-item">
+        <input type="checkbox" class="task-check">
+        <span class="task-text" contenteditable="true">Data collection</span>
+        <button class="btn-delete" onclick="deleteTask(this)" title="Delete">×</button>
+      </li>
+    </ul>
+  </section>
+</div>
 
                 <section class="card">
                     <h2>Resources & Useful Links</h2>
