@@ -179,76 +179,120 @@ function formatDate(dateStr) {
 }
 
 init();
-// Toggle completed state
-document.getElementById('taskList').addEventListener('change', function(e) {
-  if (e.target.classList.contains('task-check')) {
-    e.target.closest('.task-item').classList.toggle('completed');
-    saveTasks();
-  }
-});
+// ============================================
+// EXISTING CODE (keep all of this)
+// ============================================
 
-// Auto-save on text edit
-document.getElementById('taskList').addEventListener('blur', function(e) {
-  if (e.target.classList.contains('task-text')) {
-    saveTasks();
-  }
-}, true);
+const categoryColors = {
+    'Research': '#a78bfa',
+    'Coursework': '#60a5fa',
+    'Publications': '#34d399',
+    'Thesis': '#fbbf24'
+};
 
-// Add new task
-function addNewTask() {
-  const taskList = document.getElementById('taskList');
-  const newItem = document.createElement('li');
-  newItem.className = 'task-item';
-  newItem.innerHTML = `
-    <input type="checkbox" class="task-check">
-    <span class="task-text" contenteditable="true">New task</span>
-    <button class="btn-delete" onclick="deleteTask(this)" title="Delete">×</button>
-  `;
-  taskList.appendChild(newItem);
-  
-  // Focus the new task text for immediate editing
-  newItem.querySelector('.task-text').focus();
-  saveTasks();
+let requirements = [];
+let chart = null;
+
+async function init() {
+    await loadData();
+    renderRequirements();
+    updateProgress();
+    initChart();
+    // NEW: initialize task list after everything else
+    initTaskList();
 }
 
-// Delete task
-function deleteTask(btn) {
-  btn.closest('.task-item').remove();
-  saveTasks();
+// ... all your existing functions stay here ...
+
+// init();  <-- MOVE THIS to the bottom or keep it, just ensure initTaskList() is inside init()
+
+// ============================================
+// NEW: TASK LIST FUNCTIONS (add at the end)
+// ============================================
+
+function initTaskList() {
+    loadTasks();
+    renderTasks();
 }
 
-// Save to localStorage (persists across page reloads)
-function saveTasks() {
-  const tasks = [];
-  document.querySelectorAll('.task-item').forEach(item => {
-    tasks.push({
-      text: item.querySelector('.task-text').textContent,
-      completed: item.querySelector('.task-check').checked
-    });
-  });
-  localStorage.setItem('myTaskList', JSON.stringify(tasks));
-}
+let tasks = [];
 
-// Load from localStorage on page load
 function loadTasks() {
-  const saved = localStorage.getItem('myTaskList');
-  if (saved) {
-    const tasks = JSON.parse(saved);
-    const taskList = document.getElementById('taskList');
-    taskList.innerHTML = '';
-    tasks.forEach(task => {
-      const item = document.createElement('li');
-      item.className = 'task-item' + (task.completed ? ' completed' : '');
-      item.innerHTML = `
-        <input type="checkbox" class="task-check" ${task.completed ? 'checked' : ''}>
-        <span class="task-text" contenteditable="true">${task.text}</span>
-        <button class="btn-delete" onclick="deleteTask(this)" title="Delete">×</button>
-      `;
-      taskList.appendChild(item);
-    });
-  }
+    const saved = localStorage.getItem('taskList');
+    tasks = saved ? JSON.parse(saved) : [
+        { text: 'Review literature', completed: false },
+        { text: 'Draft methodology', completed: false },
+        { text: 'Data collection', completed: false }
+    ];
 }
 
-// Initialize on load
-document.addEventListener('DOMContentLoaded', loadTasks);
+function saveTasks() {
+    localStorage.setItem('taskList', JSON.stringify(tasks));
+}
 
+function renderTasks() {
+    const container = document.getElementById('task-list');
+    if (!container) return;
+    container.innerHTML = '';
+    
+    tasks.forEach((task, index) => {
+        const item = document.createElement('li');
+        item.className = 'task-item' + (task.completed ? ' completed' : '');
+        
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'task-check';
+        checkbox.checked = task.completed;
+        checkbox.onchange = () => toggleTask(index);
+        
+        const text = document.createElement('span');
+        text.className = 'task-text';
+        text.contentEditable = true;
+        text.textContent = task.text;
+        text.onblur = () => updateTaskText(index, text.textContent);
+        
+        const delBtn = document.createElement('button');
+        delBtn.className = 'btn-delete';
+        delBtn.innerHTML = '&times;';
+        delBtn.title = 'Delete';
+        delBtn.onclick = () => deleteTask(index);
+        
+        item.appendChild(checkbox);
+        item.appendChild(text);
+        item.appendChild(delBtn);
+        container.appendChild(item);
+    });
+}
+
+function toggleTask(index) {
+    tasks[index].completed = !tasks[index].completed;
+    saveTasks();
+    renderTasks();
+}
+
+function updateTaskText(index, newText) {
+    tasks[index].text = newText.trim() || tasks[index].text;
+    saveTasks();
+}
+
+function deleteTask(index) {
+    tasks.splice(index, 1);
+    saveTasks();
+    renderTasks();
+}
+
+function addNewTask() {
+    tasks.push({ text: 'New task', completed: false });
+    saveTasks();
+    renderTasks();
+    // Focus the new task's text for immediate editing
+    const items = document.querySelectorAll('.task-text');
+    if (items.length > 0) {
+        items[items.length - 1].focus();
+    }
+}
+
+// ============================================
+// START THE APP
+// ============================================
+init();
