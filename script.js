@@ -178,37 +178,6 @@ function formatDate(dateStr) {
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' });
 }
 
-init();
-// ============================================
-// EXISTING CODE (keep all of this)
-// ============================================
-
-const categoryColors = {
-    'Research': '#a78bfa',
-    'Coursework': '#60a5fa',
-    'Publications': '#34d399',
-    'Thesis': '#fbbf24'
-};
-
-let requirements = [];
-let chart = null;
-
-async function init() {
-    await loadData();
-    renderRequirements();
-    updateProgress();
-    initChart();
-    // NEW: initialize task list after everything else
-    initTaskList();
-}
-
-// ... all your existing functions stay here ...
-
-// init();  <-- MOVE THIS to the bottom or keep it, just ensure initTaskList() is inside init()
-
-// ============================================
-// NEW: TASK LIST FUNCTIONS (add at the end)
-// ============================================
 
 function initTaskList() {
     loadTasks();
@@ -291,8 +260,4 @@ function addNewTask() {
         items[items.length - 1].focus();
     }
 }
-
-// ============================================
-// START THE APP
-// ============================================
 init();
