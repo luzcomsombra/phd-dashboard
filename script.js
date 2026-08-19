@@ -17,7 +17,7 @@ async function init() {
 
 async function loadData() {
     try {
-        const response = await fetch('data/requirements.json');
+        const response = await fetch('requirements.json');
         const data = await response.json();
         requirements = data.requirements;
     } catch (error) {
